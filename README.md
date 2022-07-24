@@ -17,7 +17,15 @@ The first thing to do is collect data, mostly a lot of data but from reliable so
 After a couple of days I managed to find a dataset on the Kaggle platform, which really surprised me how well documented the data was.
 
 After that I started to prepare and clean the data, checking some missing values or some syntax error or discrepancy between the data. Finally, I started the process of dividing the data, for this project I decide to use an 80/20 ratio between the training data and the test data.
+```
+# Splitting the dataset into train and test sets: 80-20 split
+from sklearn.model_selection import train_test_split
 
+X_train, X_test, y_train, y_test = train_test_split(X, y, 
+                                                    test_size = 0.2, random_state = 12)
+X_train.shape, X_test.shape
+
+```
 
 After I had the data ready, I needed to choose the machine learning algorithm that best fits my dataset.
 
@@ -25,11 +33,11 @@ After I had the data ready, I needed to choose the machine learning algorithm th
 # Choosing the best machine learning model 
 Our data set is based on 32 features of a phishing pages and 1102 observations, so it is quite a high number of observations for few features, so I decided to use the following algorithms which are excellent for this kind of ratios.
 
--Random Forest Sorter
+- Random Forest Sorter
 
--K-Nearest Neighbors Classifier
+- K-Nearest Neighbors Classifier
 
--Logistic regression
+- Logistic regression
 
 Evaluation of the performance of the models
 Now, to be able to choose between the three algorithms, use one of the most useful performance metrics in classification problems, confusion matrix and the level of accuracy of the predictions of our models.
@@ -38,8 +46,37 @@ For this particular problem, my interest is in having a much higher recall compa
 The point here is not to allow our model to miss any pages, since this would mean a danger for our user. This also includes a fairly high level of accuracy between 80-95%
 
 Using the Sklearn library, I quickly implemented the three models I had chosen, evaluating each one's performance on the confusion matrix and its level of accuracy on both the training data and the test data.
+```
+  #1 is legitemance 
+  #-1 is pishing 
+  #0 is suspish
+  from sklearn.linear_model import LogisticRegression
+  from sklearn.neighbors import KNeighborsClassifier
+  from sklearn.ensemble import RandomForestClassifier
+
+  #random forest classifier
+  model1 = RandomForestClassifier(max_depth = 9)
+  model1.fit(X_train, y_train )
+  model1_train_predict = model1.predict(X_train)
+  model1_test_predict = model1.predict(X_test)
+
+  # kneighborsClassfier
+  model2 = KNeighborsClassifier(n_neighbors=4)
+  model2.fit(X_train, y_train )
+  model2_train_predict = model2.predict(X_train)
+  model2_test_predict = model2.predict(X_test)
+
+  #Logistic regression
+  model3 = LogisticRegression()
+  model3.fit(X_train, y_train )
+  model3_train_predict = model3.predict(X_train)
+  model3_test_predict = model3.predict(X_test)
+```
 
 Analyzing the results, evidently, the random forest classification model is the one with the highest level of accuracy among the three.
+
+![image](https://user-images.githubusercontent.com/86735728/180670013-d1c3d826-7070-4704-ab85-124aa072a8ff.png)
+
 
 But then, analyzing the results of the confusion matrix, notice that the K-Nearest Neighbors Classifier has a higher level in predictions of pages than if they are scams compared to the others, but its accuracy levels are relatively low. Compared to the others, which leaves us with the expectation of which model to really choose.
 
@@ -57,20 +94,22 @@ I then deployed the API to the Heroku platform, one of the most famous for hosti
 
 
 Finally, I started the development of the extension using JavaScript, I started by creating the manifest file which is a type of document that contains the metadata of our extension and that all browsers request it by obligation.
-For this extension I used Google Chrome as my browser to do the tests, regarding the extraction of the data from the web pages to send it to the API, so I decided to concentrate on only 3 specific features, this one I chose, using a data meter of importance that the SKlearn library contains with it, I could know which characteristics are the ones that our model considers most important when predicting.
+
+Then I have to focus on what types of features canI extract from the website to get better predicition, so i decide to use a function from Scikit-learn that measure the feature importance that our model give to the features on the dataset, the image below show us the results.
 
 ![image](https://user-images.githubusercontent.com/86735728/180669745-274ce00f-50d2-4e37-acf2-d4ba081125e7.png)
 
+I decided to concentrate on only 3 specific features, this one I chose, using a data meter of feauture importance that the SKlearn library contains with it, I could know which characteristics are the ones that our model considers most important when predicting.
 
-Another reason why I didn't use more features is that many of them were difficult to extract and some require a paid subscription, so I decided to focus only on four specific ones, which are the following:
+I decided to focus only on four specific ones, which are the following:
 
--SSL certification
+- SSL certification
 
--Number of URLs in anchors that belong to the same domain
+- Number of URLs in anchors that belong to the same domain
 
--Have subdomains
+- Have subdomains
 
--Have prefixes like “-” in the domain
+- Have prefixes like “-” in the domain
 
 Once the data was extracted from the web page, it was posted to the API so that it would send me back the prediction of whether it is a Phishing page or not.
 
