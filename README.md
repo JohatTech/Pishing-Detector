@@ -114,4 +114,6 @@ I decided to focus only on four specific ones, which are the following:
 Once the data was extracted from the web page, it was posted to the API so that it would send me back the prediction of whether it is a Phishing page or not.
 
 # Conclusion
-After several successful tests, I managed to complete the most relevant function of the extension, identify phishing web pages, with this I only have to deploy the extension in the Chrome store, so I will be adding the download link in this post soon.
+After several successful tests, I complete all the implmentation of the browser extension, you can find the complete code on the extension directory on the repository, this include the manifest file that commonly required among diferent browsers.
+
+I will not include the process and details of publishing this kind of extension in this documentation because is diferent for every browser.
